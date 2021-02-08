@@ -50,27 +50,22 @@ public class RemoteImp implements IRemote {
     }
 
     @Override
-    public boolean authUser(String ci, String username, String password) throws RemoteException {
+    public boolean authUser(String username, String password) throws RemoteException {
         try {
             System.out.println("Auth User....");
             Scanner S = new Scanner(this.users);
             String usernameStored;
             String passwordStored;
             while (S.hasNextLine()) {
-                String ciStored = S.nextLine();
-                if (ciStored.equals(ci)) {
+                if(!S.nextLine().isEmpty()){
                     S.nextLine();
                     usernameStored = S.nextLine();
                     passwordStored = S.nextLine();
-                    S.close();
                     if (usernameStored.equals(username) && passwordStored.equals(password))
+                        S.close();
                         return true;
-                    else
-                        return false;
-                } else if (!ciStored.equals("")) {
-                    for (int i = 0; i <= 2; i++)
-                        S.nextLine();
                 }
+                
             }
             S.close();
         } catch (IOException e) {

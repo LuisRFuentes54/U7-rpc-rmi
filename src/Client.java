@@ -1,19 +1,44 @@
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
 
-public class Client {  
-    private Client() {}
-    
-    private static void printMenu() {
+public class Client {
+    private Client() {
+    }
+
+    private static void printMainMenu() {
         System.out.println("Por favor, seleccione una de estas opciones para continuar");
         System.out.println("1- Apertura de cuenta");
-        System.out.println("2- Consulta de cuenta");
-        System.out.println("3- Deposito a una cuenta");
-        System.out.println("4- Retiro de una cuenta");
-        System.out.println("5- Transferencia a una cuenta");
-        System.out.println("6- Salir");
+        System.out.println("2- Realizar Transacción");
+        System.out.println("0- Salir");
         System.out.print("Ingrese aquí la opción de su preferencia: ");
+    }
+
+    private static void printTransactionMenu() {
+        System.out.println("Por favor, seleccione una de estas opciones para continuar");
+        System.out.println("1- Consulta de cuenta");
+        System.out.println("2- Deposito a cuenta");
+        System.out.println("3- Retiro de cuenta");
+        System.out.println("4- Transferencia entre cuentas");
+        System.out.print("Ingrese aquí la opción de su preferencia: ");
+    }
+
+    private static boolean authUser(IRemote stub, Scanner keyboard) {
+        System.out.println("Menú de autenticación de usuario");
+        System.out.print("Ingrese su username: ");
+        String username = keyboard.next();
+        System.out.print("Ingrese su password: ");
+        String password = keyboard.next();
+        try {
+            if (stub.authUser(username, password))
+                return true;
+            else
+                return false;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     public static void main(String[] args) {  
         try {  
@@ -21,6 +46,7 @@ public class Client {
             IRemote stub = (IRemote) registry.lookup("bank-rmi");
             Scanner keyboard = new Scanner(System.in);
             int option = 0;
+            int option2 = 0;
             String ci;
             String name;
             String username;
@@ -36,7 +62,7 @@ public class Client {
                 password = "";
                 amount = 0;
                 account = 0;
-                printMenu();
+                printMainMenu();
                 option = keyboard.nextInt();
                 switch (option) {
                     case 1:
@@ -44,12 +70,7 @@ public class Client {
                         ci = keyboard.next();
                         if (stub.userExist(ci)){
                             if (stub.permitCreateAccount(ci)) {
-                                System.out.println("Menú de autenticación de usuario");
-                                System.out.print("Ingrese su username: ");
-                                username = keyboard.next();
-                                System.out.print("Ingrese su password: ");
-                                password = keyboard.next();
-                                if (stub.authUser(ci, username, password))
+                                if (authUser(stub, keyboard))
                                     System.out.println("Usuario autenticado");
                                 else {
                                     System.out.println("Error en la autenticación del usuario");
@@ -77,14 +98,32 @@ public class Client {
                         System.out.println("Cuenta creada. Nro de cuenta: " + account);
                         break;
                 
-                    case 6:
+                    case 2:
+                        if(authUser(stub, keyboard)){
+                            printTransactionMenu();
+                            option2 = keyboard.nextInt();
+                            switch (option2) {
+                                case 1:
+                                    System.out.println("holaaaaaaaaa!");
+                                    break;
+                            
+                                default:
+                                    break;
+                            }
+                        }
+                        else {
+                            System.out.println("Error en la autenticación del usuario");
+                        }
+                        break;
+
+                    case 0:
                         System.out.println("Gracias por usar ATM Client de Mini-Banco");
                         break;
 
                     default:
                         break;
                 }
-                if (option == 6)
+                if (option == 0)
                     break;
             }
             keyboard.close();
