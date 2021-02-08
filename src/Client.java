@@ -82,9 +82,10 @@ public class Client {
                             }
                         }
                         else{
+                            keyboard.nextLine();
                             System.out.println("Menú de creación de usuario");
                             System.out.print("Ingrese su nombre: ");
-                            name = keyboard.next();
+                            name = keyboard.nextLine();
                             System.out.print("Ingrese su username: ");
                             username = keyboard.next();
                             System.out.print("Ingrese su password: ");
