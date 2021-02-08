@@ -24,7 +24,7 @@ public class Client {
         System.out.print("Ingrese aquí la opción de su preferencia: ");
     }
 
-    private static boolean authUser(IRemote stub, Scanner keyboard) {
+    private static String authUser(IRemote stub, Scanner keyboard) {
         System.out.println("Menú de autenticación de usuario");
         System.out.print("Ingrese su username: ");
         String username = keyboard.next();
@@ -32,12 +32,12 @@ public class Client {
         String password = keyboard.next();
         try {
             if (stub.authUser(username, password))
-                return true;
+                return username;
             else
-                return false;
+                return "";
         } catch (RemoteException e) {
             e.printStackTrace();
-            return false;
+            return "";
         }
     }
     public static void main(String[] args) {  
@@ -70,7 +70,7 @@ public class Client {
                         ci = keyboard.next();
                         if (stub.userExist(ci)){
                             if (stub.permitCreateAccount(ci)) {
-                                if (authUser(stub, keyboard))
+                                if (!authUser(stub, keyboard).isEmpty())
                                     System.out.println("Usuario autenticado");
                                 else {
                                     System.out.println("Error en la autenticación del usuario");
@@ -100,12 +100,22 @@ public class Client {
                         break;
                 
                     case 2:
-                        if(authUser(stub, keyboard)){
+                        username = authUser(stub, keyboard);
+                        if(!username.isEmpty()){
                             printTransactionMenu();
                             option2 = keyboard.nextInt();
                             switch (option2) {
                                 case 1:
-                                    System.out.println("holaaaaaaaaa!");
+                                    String[] accounts = stub.getAccounts(username);
+                                    for (int i = 0; i <= accounts.length - 1; i++)
+                                        if(accounts[i] != null)
+                                            System.out.println(i+1 + "- " + accounts[i]);
+                                    System.out.print("Seleccione la cuenta a consultar: ");
+                                    option2 = keyboard.nextInt() - 1;
+                                    String[] transactions = stub.getTransactions(accounts[option2]);
+                                    for (int j = 0; j < transactions.length - 1; j++)
+                                        if(transactions[j] != null)    
+                                            System.out.println(transactions[j]);
                                     break;
                             
                                 default:

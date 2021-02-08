@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -9,6 +10,32 @@ public class RemoteImp implements IRemote {
     private File users = new File("user.txt");
     private File accounts = new File("account.txt");
     private File deposits = new File("deposit.txt");
+    private File withdrawals = new File("withdrawal.txt");
+    private File transferences = new File("transference.txt");
+
+    private String getCI(String username) {
+        try {
+            Scanner S = new Scanner(this.users);
+            while (S.hasNextLine()) {
+                String ci = S.nextLine();
+                if(!ci.isEmpty()){
+                    S.nextLine();
+                    String usernameStored = S.nextLine();
+                    if (usernameStored.equals(username)){
+                        S.close();
+                        return ci;
+                    }
+                    else 
+                        S.nextLine();
+                }
+            }
+            S.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Something was broke");
+            e.printStackTrace();
+        }
+        return "";
+    }
 
     @Override
     public boolean userExist(String ci) throws RemoteException {
@@ -119,5 +146,85 @@ public class RemoteImp implements IRemote {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public String[] getAccounts(String username) throws RemoteException {
+        String[] accountsUser = new String[3];
+        String ci = getCI(username);
+        System.out.println(ci);
+        int i = 0;
+        try {
+            Scanner S = new Scanner(this.accounts);
+            while (S.hasNextLine()){
+                String ciStored = S.nextLine();
+                if(ciStored.equals(ci)){
+                    accountsUser[i] = S.nextLine();
+                }
+                else if (!ciStored.isEmpty())
+                    S.nextLine();
+            }
+            S.close();
+            return accountsUser;
+        } catch (FileNotFoundException e) {
+            System.out.println("Something was broke");
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String[] getTransactions(String account) throws RemoteException {
+        String[] transactions = new String[9999];
+        int i = 0;
+        try {
+            Scanner depositScanner = new Scanner(this.deposits);
+            Scanner withdrawalScanner = new Scanner(this.withdrawals);
+            Scanner transferenceScanner = new Scanner(this.transferences);
+            while (depositScanner.hasNextLine()){
+                String accountStored = depositScanner.nextLine();
+                if (accountStored.equals(account)){
+                    String deposit = "Deposit - Amount: " + depositScanner.nextLine() + " - Description: "+ depositScanner.nextLine();
+                    transactions[i] = deposit;
+                    i++;
+                }
+                else if (!accountStored.isEmpty()){
+                    depositScanner.nextLine();
+                    depositScanner.nextLine();
+                }
+            }
+            while (withdrawalScanner.hasNextLine()){
+                String accountStored = withdrawalScanner.nextLine();
+                if (accountStored.equals(account)){
+                    String withdrawal = "Withdrawal - Amount: " + withdrawalScanner.nextLine() + " - Description: "+ withdrawalScanner.nextLine();
+                    transactions[i] = withdrawal;
+                    i++;
+                }
+                else if (!accountStored.isEmpty()){
+                    withdrawalScanner.nextLine();
+                    withdrawalScanner.nextLine();
+                }
+            }
+            while (transferenceScanner.hasNextLine()){
+                String accountStored = transferenceScanner.nextLine();
+                if (accountStored.equals(account)){
+                    String transference = "Transference - Amount: " + transferenceScanner.nextLine() + " - Description: "+ transferenceScanner.nextLine();
+                    transactions[i] = transference;
+                    i++;
+                }
+                else if (!accountStored.isEmpty()){
+                    transferenceScanner.nextLine();
+                    transferenceScanner.nextLine();
+                }
+            }
+            depositScanner.close();
+            withdrawalScanner.close();
+            transferenceScanner.close();
+            return transactions;
+        } catch (FileNotFoundException e) {
+            System.out.println("Something was broke");
+            e.printStackTrace();
+        }
+        return null;
     }
 }  

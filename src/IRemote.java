@@ -7,4 +7,6 @@ public interface IRemote extends Remote {
     boolean authUser(String username, String password) throws RemoteException;
     int createAccount(String ci, float deposit) throws RemoteException;
     boolean permitCreateAccount(String ci) throws RemoteException;
+    String[] getAccounts(String username) throws RemoteException;
+    String[] getTransactions(String account) throws RemoteException;
 }
