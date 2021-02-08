@@ -105,7 +105,7 @@ public class RemoteImp implements IRemote {
         int count = 0;
         try {
             System.out.println("Verifiying User....");
-            Scanner S = new Scanner(this.users);
+            Scanner S = new Scanner(this.accounts);
             while (S.hasNextLine()) {
                 String ciStored = S.nextLine();
                 if (ciStored.equals(ci)) {
@@ -114,7 +114,7 @@ public class RemoteImp implements IRemote {
                         S.close();
                         return false;
                     }
-                } else if (!ciStored.equals(""))
+                } else if (ciStored.isEmpty())
                     S.nextLine();
             }
             S.close();
