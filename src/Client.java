@@ -22,9 +22,20 @@ public class Client {
             Scanner keyboard = new Scanner(System.in);
             int option = 0;
             String ci;
+            String name;
+            String username;
+            String password;
+            float amount;
+            int account;
             System.out.println("ATM Client");
             System.out.println("Bienvenido a Mini-Banco");
             while (true) {
+                ci = "";
+                name = "";
+                username = "";
+                password = "";
+                amount = 0;
+                account = 0;
                 printMenu();
                 option = keyboard.nextInt();
                 switch (option) {
@@ -32,11 +43,38 @@ public class Client {
                         System.out.print("Ingrese su CI: ");
                         ci = keyboard.next();
                         if (stub.userExist(ci)){
-                            System.out.println("El usuario existe");
+                            if (stub.permitCreateAccount(ci)) {
+                                System.out.println("Menú de autenticación de usuario");
+                                System.out.print("Ingrese su username: ");
+                                username = keyboard.next();
+                                System.out.print("Ingrese su password: ");
+                                password = keyboard.next();
+                                if (stub.authUser(ci, username, password))
+                                    System.out.println("Usuario autenticado");
+                                else {
+                                    System.out.println("Error en la autenticación del usuario");
+                                    break;
+                                }
+                            } else {
+                                System.out.println("Error creando la cuenta. La persona indicada llego al limite de cuentas");
+                                break;
+                            }
                         }
                         else{
-                            System.out.println("El usuario no existe");
+                            System.out.println("Menú de creación de usuario");
+                            System.out.print("Ingrese su nombre: ");
+                            name = keyboard.next();
+                            System.out.print("Ingrese su username: ");
+                            username = keyboard.next();
+                            System.out.print("Ingrese su password: ");
+                            password = keyboard.next();
+                            stub.createUser(ci, name, username, password);
+                            System.out.println("Usuario creado");
                         }
+                        System.out.print("Ingrese el monto del deposito inicial: ");
+                        amount = keyboard.nextFloat();
+                        account = stub.createAccount(ci, amount);
+                        System.out.println("Cuenta creada. Nro de cuenta: " + account);
                         break;
                 
                     case 6:
