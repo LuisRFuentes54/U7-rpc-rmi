@@ -102,7 +102,7 @@ public class Client {
                 
                     case 2:
                         username = authUser(stub, keyboard);
-                        String[] accounts;
+
                         if(!username.isEmpty()){
                             printTransactionMenu();
                             option2 = keyboard.nextInt();
@@ -125,9 +125,13 @@ public class Client {
                                 
                                 case 3:
                                     ArrayList<String> accountsForWithdrawal = stub.getAccounts(username);
-                                    for (String acc : accountsForWithdrawal)
+                                    i = 1;
+                                    for (String acc : accountsForWithdrawal){
                                         if(acc != null)
-                                            System.out.println(i+1 + "- " + acc);
+                                            System.out.println(i + "- " + acc);
+                                        i++;
+                                    }
+                                        
                                     System.out.print("Seleccione la cuenta de la cual desea retirar: ");
                                     option2 = keyboard.nextInt() - 1;
                                     float availableAmount = stub.getAvailableAmount(accountsForWithdrawal.get(option2));
