@@ -2,6 +2,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Client {
     private Client() {
@@ -107,33 +108,35 @@ public class Client {
                             option2 = keyboard.nextInt();
                             switch (option2) {
                                 case 1:
-                                    accounts = stub.getAccounts(username);
-                                    for (int i = 0; i <= accounts.length - 1; i++)
-                                        if(accounts[i] != null)
-                                            System.out.println(i+1 + "- " + accounts[i]);
+                                    ArrayList<String> accounts = stub.getAccounts(username);
+                                    int i = 1;
+                                    for (String acc : accounts){
+                                        System.out.println(i + "- " + acc);
+                                        i++;
+                                    }
                                     System.out.print("Seleccione la cuenta a consultar: ");
                                     option2 = keyboard.nextInt() - 1;
-                                    String[] transactions = stub.getTransactions(accounts[option2]);
-                                    for (int j = 0; j < transactions.length - 1; j++)
-                                        if(transactions[j] != null)    
-                                            System.out.println(transactions[j]);
+                                    ArrayList<String> transactions = stub.getTransactions(accounts.get(option2));
+                                    for (String trans : transactions){  
+                                        System.out.println(trans);
+                                    }
                                     break;
                             
                                 
                                 case 3:
-                                    accounts = stub.getAccounts(username);
-                                    for (int i = 0; i <= accounts.length - 1; i++)
-                                        if(accounts[i] != null)
-                                            System.out.println(i+1 + "- " + accounts[i]);
+                                    ArrayList<String> accountsForWithdrawal = stub.getAccounts(username);
+                                    for (String acc : accountsForWithdrawal)
+                                        if(acc != null)
+                                            System.out.println(i+1 + "- " + acc);
                                     System.out.print("Seleccione la cuenta de la cual desea retirar: ");
                                     option2 = keyboard.nextInt() - 1;
-                                    float availableAmount = stub.getAvailableAmount(accounts[option2]);
+                                    float availableAmount = stub.getAvailableAmount(accountsForWithdrawal.get(option2));
                                     System.out.println("Monto disponible:" + availableAmount);
-                                    System.out.print("Selecciona la cantidad que desea retirar de la cuenta "+ accounts[option2] + ": ");
+                                    System.out.print("Selecciona la cantidad que desea retirar de la cuenta "+ accountsForWithdrawal.get(option2) + ": ");
                                     amount = keyboard.nextInt();
                                     Float retiro;
                                         if (availableAmount >= amount){
-                                            retiro = stub.makeWithdrawal(accounts[option2], amount, availableAmount);
+                                            retiro = stub.makeWithdrawal(accountsForWithdrawal.get(option2), amount, availableAmount);
                                             System.out.println("Se ha realizado su retiro con exito | Balance actual: " + retiro);
                                         }
                                         else 

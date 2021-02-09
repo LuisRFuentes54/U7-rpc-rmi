@@ -1,5 +1,6 @@
 import java.rmi.Remote; 
-import java.rmi.RemoteException;  
+import java.rmi.RemoteException;
+import java.util.ArrayList;  
 
 public interface IRemote extends Remote {
     boolean userExist(String ci) throws RemoteException;
@@ -7,8 +8,8 @@ public interface IRemote extends Remote {
     boolean authUser(String username, String password) throws RemoteException;
     int createAccount(String ci, float deposit) throws RemoteException;
     boolean permitCreateAccount(String ci) throws RemoteException;
-    String[] getAccounts(String username) throws RemoteException;
-    String[] getTransactions(String account) throws RemoteException;
     Float getAvailableAmount(String account) throws RemoteException;
     Float makeWithdrawal(String account, float amount,float availableAmount) throws RemoteException;
+    ArrayList<String> getAccounts(String username) throws RemoteException;
+    ArrayList<String> getTransactions(String account) throws RemoteException;
 }
