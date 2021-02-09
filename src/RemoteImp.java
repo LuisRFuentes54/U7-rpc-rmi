@@ -227,4 +227,78 @@ public class RemoteImp implements IRemote {
         }
         return null;
     }
+
+    @Override
+    public Float getAvailableAmount(String account) throws RemoteException {
+        float availableAmount;
+        float depositsAmount = 0;
+        float withdrawalsAmount = 0;
+        try {
+            Scanner depositScanner = new Scanner(this.deposits);
+            Scanner withdrawalScanner = new Scanner(this.withdrawals);
+
+            while (depositScanner.hasNextLine()){
+                String accountStored = depositScanner.nextLine();
+                if (accountStored.equals(account)){
+                    depositsAmount = depositsAmount + Float.parseFloat(depositScanner.nextLine());
+                    depositScanner.nextLine();  
+                }
+                else if (!accountStored.isEmpty()){
+                    depositScanner.nextLine();
+                    depositScanner.nextLine();
+                }
+            }
+
+            while (withdrawalScanner.hasNextLine()){
+                String accountStored = withdrawalScanner.nextLine();
+                if (accountStored.equals(account)){
+                    withdrawalsAmount = withdrawalsAmount + Float.parseFloat(withdrawalScanner.nextLine());
+                    depositScanner.nextLine();
+                }
+                else if (!accountStored.isEmpty()){
+                    withdrawalScanner.nextLine();
+                    withdrawalScanner.nextLine();
+                }
+            }
+         
+            depositScanner.close();
+            withdrawalScanner.close();
+            
+            if (withdrawalsAmount > depositsAmount){
+                System.out.println("Retiros" + withdrawalsAmount);
+                availableAmount = withdrawalsAmount - depositsAmount;
+            }
+            else {
+                System.out.println("Depositos " + depositsAmount);
+                availableAmount =depositsAmount - withdrawalsAmount;
+            }
+
+            return availableAmount;
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Something was broke");
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Float makeWithdrawal(String account, float amount, float availableAmount) throws RemoteException {
+        
+        try {
+            FileWriter writerWithdrawal = new FileWriter(this.withdrawals, true);
+            writerWithdrawal.write(account + "\n");
+            writerWithdrawal.write(amount + "\n");
+            writerWithdrawal.write("Retiro por cajero" + "\n");
+            writerWithdrawal.close();
+
+            availableAmount = availableAmount - amount; 
+
+        } catch (IOException e) {
+            System.out.println("Something was broke");
+            e.printStackTrace();
+            
+        }
+        return availableAmount;
+    }
 }  

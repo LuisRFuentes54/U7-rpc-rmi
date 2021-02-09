@@ -101,12 +101,13 @@ public class Client {
                 
                     case 2:
                         username = authUser(stub, keyboard);
+                        String[] accounts;
                         if(!username.isEmpty()){
                             printTransactionMenu();
                             option2 = keyboard.nextInt();
                             switch (option2) {
                                 case 1:
-                                    String[] accounts = stub.getAccounts(username);
+                                    accounts = stub.getAccounts(username);
                                     for (int i = 0; i <= accounts.length - 1; i++)
                                         if(accounts[i] != null)
                                             System.out.println(i+1 + "- " + accounts[i]);
@@ -118,8 +119,31 @@ public class Client {
                                             System.out.println(transactions[j]);
                                     break;
                             
+                                
+                                case 3:
+                                    accounts = stub.getAccounts(username);
+                                    for (int i = 0; i <= accounts.length - 1; i++)
+                                        if(accounts[i] != null)
+                                            System.out.println(i+1 + "- " + accounts[i]);
+                                    System.out.print("Seleccione la cuenta de la cual desea retirar: ");
+                                    option2 = keyboard.nextInt() - 1;
+                                    float availableAmount = stub.getAvailableAmount(accounts[option2]);
+                                    System.out.println("Monto disponible:" + availableAmount);
+                                    System.out.print("Selecciona la cantidad que desea retirar de la cuenta "+ accounts[option2] + ": ");
+                                    amount = keyboard.nextInt();
+                                    Float retiro;
+                                        if (availableAmount >= amount){
+                                            retiro = stub.makeWithdrawal(accounts[option2], amount, availableAmount);
+                                            System.out.println("Se ha realizado su retiro con exito | Balance actual: " + retiro);
+                                        }
+                                        else 
+                                            System.out.println("El monto es mayor al disponible en su cuenta");
+                                        
+                                    break;
+
                                 default:
                                     break;
+
                             }
                         }
                         else {
