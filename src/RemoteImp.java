@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class RemoteImp implements IRemote {
 
@@ -88,11 +89,11 @@ public class RemoteImp implements IRemote {
                     S.nextLine();
                     usernameStored = S.nextLine();
                     passwordStored = S.nextLine();
-                    if (usernameStored.equals(username) && passwordStored.equals(password))
+                    if (usernameStored.equals(username) && passwordStored.equals(password)){
                         S.close();
                         return true;
+                    }
                 }
-                
             }
             S.close();
         } catch (IOException e) {
@@ -149,17 +150,16 @@ public class RemoteImp implements IRemote {
     }
 
     @Override
-    public String[] getAccounts(String username) throws RemoteException {
-        String[] accountsUser = new String[3];
+    public ArrayList<String> getAccounts(String username) throws RemoteException {
+        ArrayList<String> accountsUser = new ArrayList<String>();
         String ci = getCI(username);
         System.out.println(ci);
-        int i = 0;
         try {
             Scanner S = new Scanner(this.accounts);
             while (S.hasNextLine()){
                 String ciStored = S.nextLine();
                 if(ciStored.equals(ci)){
-                    accountsUser[i] = S.nextLine();
+                    accountsUser.add(S.nextLine());
                 }
                 else if (!ciStored.isEmpty())
                     S.nextLine();
@@ -174,9 +174,8 @@ public class RemoteImp implements IRemote {
     }
 
     @Override
-    public String[] getTransactions(String account) throws RemoteException {
-        String[] transactions = new String[9999];
-        int i = 0;
+    public ArrayList<String> getTransactions(String account) throws RemoteException {
+        ArrayList<String> transactions = new ArrayList<String>();
         try {
             Scanner depositScanner = new Scanner(this.deposits);
             Scanner withdrawalScanner = new Scanner(this.withdrawals);
@@ -184,9 +183,8 @@ public class RemoteImp implements IRemote {
             while (depositScanner.hasNextLine()){
                 String accountStored = depositScanner.nextLine();
                 if (accountStored.equals(account)){
-                    String deposit = "Deposit - Amount: " + depositScanner.nextLine() + " - Description: "+ depositScanner.nextLine();
-                    transactions[i] = deposit;
-                    i++;
+                    String deposit = "Deposito - Monto: " + depositScanner.nextLine() + " - Descripción: "+ depositScanner.nextLine();
+                    transactions.add(deposit);
                 }
                 else if (!accountStored.isEmpty()){
                     depositScanner.nextLine();
@@ -196,9 +194,8 @@ public class RemoteImp implements IRemote {
             while (withdrawalScanner.hasNextLine()){
                 String accountStored = withdrawalScanner.nextLine();
                 if (accountStored.equals(account)){
-                    String withdrawal = "Withdrawal - Amount: " + withdrawalScanner.nextLine() + " - Description: "+ withdrawalScanner.nextLine();
-                    transactions[i] = withdrawal;
-                    i++;
+                    String withdrawal = "Retiro - Monto: " + withdrawalScanner.nextLine() + " - Descripción: "+ withdrawalScanner.nextLine();
+                    transactions.add(withdrawal);
                 }
                 else if (!accountStored.isEmpty()){
                     withdrawalScanner.nextLine();
@@ -208,9 +205,8 @@ public class RemoteImp implements IRemote {
             while (transferenceScanner.hasNextLine()){
                 String accountStored = transferenceScanner.nextLine();
                 if (accountStored.equals(account)){
-                    String transference = "Transference - Amount: " + transferenceScanner.nextLine() + " - Description: "+ transferenceScanner.nextLine();
-                    transactions[i] = transference;
-                    i++;
+                    String transference = "Transferencia - Monto: " + transferenceScanner.nextLine() + " - Descripción: "+ transferenceScanner.nextLine();
+                    transactions.add(transference);
                 }
                 else if (!accountStored.isEmpty()){
                     transferenceScanner.nextLine();
