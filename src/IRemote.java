@@ -12,4 +12,6 @@ public interface IRemote extends Remote {
     Float makeWithdrawal(String account, float amount,float availableAmount) throws RemoteException;
     ArrayList<String> getAccounts(String username) throws RemoteException;
     ArrayList<String> getTransactions(String account) throws RemoteException;
+    String validateInformation(String ci, String account) throws RemoteException;
+    Float makeDeposit(String account, float amount,float availableAmount, String description) throws RemoteException;
 }

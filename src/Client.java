@@ -121,7 +121,53 @@ public class Client {
                                         System.out.println(trans);
                                     }
                                     break;
+
+                                case 2:
+                                    ArrayList<String> accountsForDeposit = stub.getAccounts(username);
+                                    i = 1;
+                                    for (String acc : accountsForDeposit){
+                                        if(acc != null)
+                                            System.out.println(i + "- " + acc);
+                                        i++;
+                                    }
+                                    System.out.println("4- Cuenta de terceros");
+                                        
+                                    System.out.print("Seleccione la cuenta en la cual desea depositar: ");
+                                    option2 = keyboard.nextInt() - 1;
+                                    String accountToDeposit;
+                                    if (option2 == 3){
+                                        System.out.print ("Indique la cédula asociada a la cuenta:");
+                                        String cedula = keyboard.next();
+                                        System.out.print ("Indique el número de cuenta:");
+                                        String cuenta = keyboard.next();
+                                        name = stub.validateInformation(cedula, cuenta);
                             
+                                        if (name.equals("")){
+                                            System.out.println("Datos inválidos");
+                                            break;
+                                        }
+                                        else {
+                                            System.out.println("El nombre del beneficiario es:" + name);
+                                            System.out.println ("1- Si");
+                                            System.out.println ("2- No");
+                                            int confirmation = keyboard.nextInt();
+                                            if (confirmation == 2)
+                                                break;
+                                            accountToDeposit = cuenta;
+                                        }   
+                                    }
+                                    else {
+                                        accountToDeposit = accountsForDeposit.get(option2);
+                                    }
+                                    float availableAmount = stub.getAvailableAmount(accountToDeposit);
+                                    System.out.print("Indique la cantidad que desea depositar en la cuenta "+ accountToDeposit + ": ");
+                                    amount = keyboard.nextInt();
+                                    System.out.print ("Indique una descripción para la transacción:");
+                                    String description = keyboard.next();
+                                    Float deposit = stub.makeDeposit(accountToDeposit, amount, availableAmount, description);
+                                    System.out.println("Se ha realizado su deposito con exito | Balance actual: " + deposit);
+                                    
+                                    break;
                                 
                                 case 3:
                                     ArrayList<String> accountsForWithdrawal = stub.getAccounts(username);
@@ -134,7 +180,7 @@ public class Client {
                                         
                                     System.out.print("Seleccione la cuenta de la cual desea retirar: ");
                                     option2 = keyboard.nextInt() - 1;
-                                    float availableAmount = stub.getAvailableAmount(accountsForWithdrawal.get(option2));
+                                    availableAmount = stub.getAvailableAmount(accountsForWithdrawal.get(option2));
                                     System.out.println("Monto disponible:" + availableAmount);
                                     System.out.print("Selecciona la cantidad que desea retirar de la cuenta "+ accountsForWithdrawal.get(option2) + ": ");
                                     amount = keyboard.nextInt();
@@ -174,4 +220,6 @@ public class Client {
             e.printStackTrace(); 
         } 
     } 
+
+  
 } 

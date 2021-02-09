@@ -297,4 +297,62 @@ public class RemoteImp implements IRemote {
         }
         return availableAmount;
     }
+
+    @Override
+    public Float makeDeposit(String account, float amount, float availableAmount, String description) throws RemoteException {
+        
+        try {
+            FileWriter writerdeposit = new FileWriter(this.deposits, true);
+            writerdeposit.write(account + "\n");
+            writerdeposit.write(amount + "\n");
+            writerdeposit.write(description + "\n");
+            writerdeposit.close();
+
+            availableAmount = availableAmount + amount; 
+
+        } catch (IOException e) {
+            System.out.println("Something was broke");
+            e.printStackTrace();
+            
+        }
+        return availableAmount;
+    }
+
+
+    @Override
+    public String validateInformation(String ci, String account) throws RemoteException {
+        String name="";
+        try {
+            Scanner A = new Scanner(this.accounts);
+            while (A.hasNextLine()){
+                String ciStored = A.nextLine();
+                String accountStored = A.nextLine();
+                if(ciStored.equals(ci) && accountStored.equals(account)){
+                    Scanner S = new Scanner(this.users);
+                    while (S.hasNextLine()) {
+                        ciStored = S.nextLine();
+                        System.out.println("cedula" + ciStored);
+                        if (ciStored.equals(ci)) {
+                            name = S.nextLine();
+                            System.out.println("name"+ name);
+                            break;
+                        } 
+                        else {
+                            for (int i = 0; i <= 2; i++)
+                            S.nextLine();
+                        }
+                        
+                    }
+                    S.close();
+                    
+                }  
+            }
+            A.close();
+             
+        } catch (IOException e) {
+            System.out.println("Something was broke");
+            e.printStackTrace();  
+        }
+        return name;    
+    }
 }  
